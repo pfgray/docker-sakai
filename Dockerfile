@@ -18,4 +18,6 @@ ADD ./sakai-demo-10.4 /sakai-demo
 #for some reason it's already unpacked??
 WORKDIR /sakai-demo
 
+EXPOSE 8080
+
 CMD ["/bin/bash", "./start-sakai.sh"]
