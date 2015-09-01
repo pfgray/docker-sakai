@@ -1,4 +1,4 @@
-FROM library/ubuntu:14.04
+FROM library/ubuntu:15.04
 
 #adds the add-apt-repo tool
 RUN apt-get install -y software-properties-common
@@ -16,19 +16,34 @@ RUN tar -zxvf apache-tomcat-8.0.26.tar.gz
 RUN mv apache-tomcat-8.0.26 tomcat
 
 # install mysql
-#RUN echo "deb http://archiveubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get -y install mysql-server
+RUN echo "mysql-server mysql-server/root_password password lol" | debconf-set-selections
+RUN echo 'mysql-server mysql-server/root_password_again password lol' | debconf-set-selections
+RUN apt-get -yq install mysql-server
 
-#install maven & git
-RUN apt-get install -y maven
+#install maven 3.3.3 & git
+RUN wget http://mirrors.sonic.net/apache/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
+RUN tar -zxvf apache-maven-3.3.3-bin.tar.gz
+RUN mv apache-maven-3.3.3 /usr/local/maven
+RUN ln -s /usr/local/maven/bin/mvn /usr/bin/mvn
 RUN apt-get install -y git
 
+#install ruby 2.2.3
+RUN apt-get -y install git-core curl zlib1g-dev build-essential libssl-dev  \
+                       libreadline-dev libyaml-dev libsqlite3-dev sqlite3   \
+                       libxml2-dev libxslt1-dev libcurl4-openssl-dev        \
+                       python-software-properties libffi-dev
+RUN git clone git://github.com/sstephenson/rbenv.git /.rbenv
+ENV PATH "/.rbenv/bin:$PATH"
+RUN eval "$(rbenv init -)"
+RUN git clone git://github.com/sstephenson/ruby-build.git /.rbenv/plugins/ruby-build
+ENV PATH "/.rbenv/plugins/ruby-build/bin:$PATH"
+RUN git clone https://github.com/sstephenson/rbenv-gem-rehash.git /.rbenv/plugins/rbenv-gem-rehash
+RUN rbenv install 2.2.3
+RUN rbenv global 2.2.3
+
 #install sakai
-RUN echo 'e'
 RUN git clone https://github.com/sakaiproject/sakai.git /sakai
 WORKDIR /sakai
-RUN mvn dependency:resolve
 RUN mvn clean install sakai:deploy -Dmaven.tomcat.home=/tomcat
 
 #configure mysql
