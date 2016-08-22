@@ -11,19 +11,19 @@ RUN apt-get install -y oracle-java8-installer
 
 #install tomcat
 WORKDIR /opt
-RUN wget http://apache.go-parts.com/tomcat/tomcat-8/v8.0.26/bin/apache-tomcat-8.0.26.tar.gz
-RUN tar -zxvf apache-tomcat-8.0.26.tar.gz
-RUN mv apache-tomcat-8.0.26 /tomcat
+RUN wget http://apache.mirrors.tds.net/tomcat/tomcat-8/v8.5.4/bin/apache-tomcat-8.5.4.tar.gz
+RUN tar -zxvf apache-tomcat-8.5.4.tar.gz
+RUN mv apache-tomcat-8.5.4 /tomcat
 
 # install mysql
 RUN echo "mysql-server mysql-server/root_password password password" | debconf-set-selections
 RUN echo 'mysql-server mysql-server/root_password_again password password' | debconf-set-selections
 RUN apt-get -yq install mysql-server
 
-#install maven 3.3.3 & git
-RUN wget http://mirrors.sonic.net/apache/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
-RUN tar -zxvf apache-maven-3.3.3-bin.tar.gz
-RUN mv apache-maven-3.3.3 /usr/local/maven
+#install maven 3.3.9 & git
+RUN wget http://mirrors.sonic.net/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+RUN tar -zxvf apache-maven-3.3.9-bin.tar.gz
+RUN mv apache-maven-3.3.9 /usr/local/maven
 RUN ln -s /usr/local/maven/bin/mvn /usr/bin/mvn
 RUN apt-get install -y git
 
